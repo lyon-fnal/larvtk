@@ -11,7 +11,9 @@ mrb newDev
 source localProducts*/setup
 cd srcs
 git clone https://github.com/lyon-fnal/artvtk.git
+cd artvtk ; git checkout develop ; cd ..
 git clone https://github.com/lyon-fnal/larvtk.git
+cd larvtk ; git checkout develop ; cd ..
 mrb uc  # Update the top level CMakeLists.txt file
 
 export PRODUCTS=$PRODUCTS:/cvmfs/gm2.opensciencegrid.org/prod7/external
