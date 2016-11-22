@@ -1,0 +1,57 @@
+#include "services_microboone_basic.fcl"
+
+process_name: viz
+
+source : {
+  module_type: RootInput
+  maxEvents: -1
+}
+
+services : {
+
+  message : {
+    debugModules : ["*"]
+    suppressInfo : []
+
+     destinations : {
+       LogToConsole : {
+         type       : "cout"
+         threshold  : "DEBUG"
+     }
+   }
+  } // end of message services
+
+  CatalystLive: {}
+}
+
+physics : {
+
+  producers : {
+
+    vtkWires : {
+      module_type : Wires2VTK
+      inputTag : "caldata"   // only one in my file
+    }
+  }
+
+  analyzers : {
+    show : {
+      module_type : ShowVtkVizObjectsInEvent
+    }
+
+    live : {
+      module_type : CatalystLiveVtkViz
+     }
+
+    write : {
+      module_type: WriteVtkVizData
+      baseFileName : "viz/recoWires"
+    }
+  }
+
+  path1 : [ vtkWires ]
+  endpaths : [show, live]
+}
+
+services.ExptGeoHelperInterface: @local::microboone_geometry_helper
+services.Geometry: @local::microboone_geo

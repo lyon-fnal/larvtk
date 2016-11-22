@@ -1,0 +1,57 @@
+#include "services_microboone_basic.fcl"
+
+process_name: viz
+
+source : {
+  module_type: RootInput
+  maxEvents: -1
+}
+
+services : {
+
+  message : {
+    debugModules : ["*"]
+    suppressInfo : []
+
+     destinations : {
+       LogToConsole : {
+         type       : "cout"
+         threshold  : "DEBUG"
+     }
+   }
+  } // end of message services
+
+  CatalystLive: {}
+}
+
+physics : {
+
+  producers : {
+
+    vtkDigis : {
+      module_type : FastRawDigits2VTK
+      inputTag : "daq"
+    }
+  }
+
+  analyzers : {
+    show : {
+      module_type : ShowVtkVizObjectsInEvent
+    }
+
+    live : {
+      module_type : CatalystLiveVtkViz
+     }
+
+    write : {
+      module_type: WriteVtkVizData
+      baseFileName : "viz/fastrawdigits"
+    }
+  }
+
+  path1 : [ vtkDigis ]
+  endpaths : [show, write ]
+}
+
+services.ExptGeoHelperInterface: @local::microboone_geometry_helper
+services.Geometry: @local::microboone_geo

@@ -1,0 +1,53 @@
+process_name: viz
+
+source : {
+  module_type: RootInput
+  maxEvents: -1
+}
+
+services : {
+
+  message : {
+    debugModules : ["*"]
+    suppressInfo : []
+
+     destinations : {
+       LogToConsole : {
+         type       : "cout"
+         threshold  : "DEBUG"
+     }
+   }
+  } // end of message services
+
+  CatalystLive: {}
+}
+
+physics : {
+
+  producers : {
+
+    vtkSpacePoints : {
+      module_type : SpacePoints2VTK
+      inputTags : ["pandoraCosmic", "trackkalmanhit", "pandoraCosmicKHit", "pmtrack", "pandoraNuPMA", "pandoraNu",
+                   "pandoraNuKHit"]
+    }
+  }
+
+  analyzers : {
+    show : {
+      module_type : ShowVtkVizObjectsInEvent
+    }
+
+    live : {
+      module_type : CatalystLiveVtkViz
+     }
+
+    write : {
+      module_type: WriteVtkVizData
+      baseFileName : "viz/out"
+    }
+  }
+
+  path1 : [ vtkSpacePoints ]
+  endpaths : [show, live]
+}
