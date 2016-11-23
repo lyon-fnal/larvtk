@@ -50,7 +50,7 @@ physics : {
   }
 
   path1 : [ vtkWires ]
-  endpaths : [show, live]
+  endpaths : [show, write]
 }
 
 services.ExptGeoHelperInterface: @local::microboone_geometry_helper

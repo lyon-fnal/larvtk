@@ -101,9 +101,11 @@ void larvtk::RawDigits2VTK::produce(art::Event & e)
   // Get the data corresponding to this tag
   auto digis = * ( e.getValidHandle< std::vector<raw::RawDigit> >(inputTag_) );
 
+  auto nSamples = digis[0].Samples();
+
   // Set up the vtkImageData
   vtkSmartPointer<vtkImageData> img = vtkSmartPointer<vtkImageData>::New();
-  img->SetDimensions(geom->MaxWires(), digis[0].Samples(), 1 );
+  img->SetDimensions(digis[0].Samples(), geom->MaxWires(), 1 );
   img->SetOrigin(0, 0, 0);
   img->SetSpacing(1, 1, 1);
 
@@ -144,9 +146,11 @@ void larvtk::RawDigits2VTK::produce(art::Event & e)
       LOG_ERROR("RawDigits2VTK") << "Channel " << digi.Channel() << " has compressed ADC - not sure what we'll get";
     }
 
+    LOG_INFO("RawDigits2VTK") << "There are " << digi.Samples() << " for wire " << wire.Wire << " in plane " << wire.Plane;
     // Loop over ADC counts
     for ( size_t i = 0; i < digi.Samples(); ++i ){
-      adcs[wire.Plane]->SetTuple1(i*geom->MaxWires() + wire.Wire, static_cast<double>(digi.ADC(i)));
+      // adcs[wire.Plane]->SetTuple1(i*geom->MaxWires() + wire.Wire, static_cast<double>(digi.ADC(i)));
+      adcs[wire.Plane]->SetTuple1(nSamples*wire.Wire + i, static_cast<double>(digi.ADC(i)));
     }
   }
 

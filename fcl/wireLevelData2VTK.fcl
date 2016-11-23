@@ -28,10 +28,22 @@ physics : {
 
   producers : {
 
-    vtkDigis : {
-      module_type : RawDigits2VTK
-      inputTag : "daq"
+    vtkWires : {
+      module_type : Wires2VTK
+      inputTag : "caldata"   // only one in my file
     }
+
+    vtkDigisFast : {
+      module_type : FastRawDigits2VTK
+      inputTag : "daq"   // only one in my file
+    }
+
+    vtkDigisSlow : {
+      module_type : RawDigits2VTK
+      inputTag : "daq"   // only one in my file
+    }
+
+
   }
 
   analyzers : {
@@ -39,17 +51,13 @@ physics : {
       module_type : ShowVtkVizObjectsInEvent
     }
 
-    live : {
-      module_type : CatalystLiveVtkViz
-     }
-
     write : {
       module_type: WriteVtkVizData
-      baseFileName : "viz/rawdigitsNew"
+      baseFileName : "viz/recoWireLevel"
     }
   }
 
-  path1 : [ vtkDigis ]
+  path1 : [ vtkWires, vtkDigisFast, vtkDigisSlow ]
   endpaths : [show, write]
 }
 
